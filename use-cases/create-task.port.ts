@@ -11,5 +11,13 @@ export type CreateTaskResponse = {
 };
 
 export interface CreateTaskRequester {
-    execute(request: CreateTaskRequest): Promise<CreateTaskResponse>;
+    execute(request: CreateTaskRequest):void;
+}
+
+export interface CreateTaskPresenter{
+    present(response: CreateTaskResponse): void;
+}
+
+export interface ICreateTaskRequesterFactory {
+    make(presenter :CreateTaskPresenter): CreateTaskRequester
 }

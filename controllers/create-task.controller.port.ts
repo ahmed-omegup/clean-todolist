@@ -1,8 +1,5 @@
-import { CreateTaskRequest, CreateTaskResponse } from "../use-cases/create-task.port";
+import { CreateTaskPresenter, CreateTaskRequest, CreateTaskResponse } from "../use-cases/create-task.port";
 
-export interface CreateTaskPresenter {
-    present(response: CreateTaskResponse): void;
-}
 
 
 export interface ICreateTaskController{
@@ -10,5 +7,5 @@ export interface ICreateTaskController{
 }
 
 export interface ICreateTaskControllerFactory {
-    make(presenter:CreateTaskPresenter): ICreateTaskController
+    make(presenter: CreateTaskPresenter): ICreateTaskController
 }

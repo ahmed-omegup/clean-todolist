@@ -1,14 +1,16 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import type { ICreateTaskControllerFactory } from '../../controllers/create-task.controller.port'
-import { AppHOC } from './App'
+import type { IListTaskControllerFactory } from '../../controllers/list-tasks.controller.port'
+import { App } from './App'
 
 
-export const bootstrap = (createTask: ICreateTaskControllerFactory) => {
-  const App = AppHOC(createTask)
+export const bootstrap = (di : {createTask: ICreateTaskControllerFactory,
+  listTasks: IListTaskControllerFactory
+}) => {
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
-      <App />
+      <App di={di}/>
     </StrictMode>,
   )
 }

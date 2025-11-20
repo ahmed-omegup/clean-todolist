@@ -1,20 +1,21 @@
-import { CreateTaskRequest, CreateTaskRequester } from "../use-cases/create-task.port";
-import { CreateTaskPresenter, ICreateTaskController, ICreateTaskControllerFactory } from "./create-task.controller.port";
+import { CreateTaskRequesterFactory } from "../use-cases/create-task";
+import { CreateTaskPresenter, CreateTaskRequest, CreateTaskRequester } from "../use-cases/create-task.port";
+import { ICreateTaskController, ICreateTaskControllerFactory } from "./create-task.controller.port";
 
 
 export class CreateTaskController implements ICreateTaskController {
-    constructor(private presenter: CreateTaskPresenter, private requester: CreateTaskRequester) { }
+    constructor( private requester: CreateTaskRequester) { }
 
-    async handleRequest(request: CreateTaskRequest): Promise<void> {
-       const res =  await this.requester.execute(request)
-       this.presenter.present(res)
+     handleRequest(request: CreateTaskRequest): void {
+        this.requester.execute(request)
+       
     }
 }
 
 
 export class CreateTaskControllerFactory implements ICreateTaskControllerFactory{
-    constructor(private requester: CreateTaskRequester){}
+    constructor(private requesterFactory: CreateTaskRequesterFactory){}
     make(presenter: CreateTaskPresenter): CreateTaskController {
-       return new CreateTaskController(presenter, this.requester)
+       return new CreateTaskController(this.requesterFactory.make(presenter))
     } 
 }
