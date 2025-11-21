@@ -1,40 +1,54 @@
-import { createRef, useState } from 'react'
-import type { ICreateTaskControllerFactory } from '../../controllers/create-task.controller.port'
-import type { CreateTaskResponse } from '../../use-cases/create-task.port'
+import { createRef, useState } from 'react';
+import type { CreateTaskCommand } from '../../controllers/create-task.controller.port';
+import type { Controller } from '../../controllers/type';
+import type {
+  CreateTaskError,
+  CreateTaskResult,
+} from '../../use-cases/create-task.port';
+import type { Presenter } from '../../use-cases/types';
 
+export type CreateTask = (
+  q: Presenter<CreateTaskResult, CreateTaskError>
+) => Controller<CreateTaskCommand>;
 
+export const CreateTodo = ({
+  di,
+  goHome,
+}: {
+  goHome: () => void;
+  di: {
+    createTask: CreateTask;
+  };
+}) => {
+  const ref = createRef<HTMLInputElement>();
+  const ref1 = createRef<HTMLTextAreaElement>();
 
+  const [response, setResponse] = useState<CreateTaskError | null>(null);
+  const controller = di.createTask({
+    present(response) {
+      if (response.success) {
+        goHome();
+      } else {
+        setResponse(response.error);
+      }
+    },
+  });
+  const state = response ? `Failed to create task: ${response}` : '';
 
-export const CreateTodo = ({ di, goHome }: { goHome: () => void, di: { createTask: ICreateTaskControllerFactory } }) => {
-    const ref = createRef<HTMLInputElement>()
-    const ref1 = createRef<HTMLTextAreaElement>()
-
-    const [response, setResponse] = useState<CreateTaskResponse | null>(null)
-    const controller = di.createTask.make({
-        present(response) {
-            if (response.success) {
-                goHome()
-            } else {
-                setResponse(response)
-            }
-        }
-    })
-    const state = response ? (response.success ? "Task created successfully" : `Failed to create task: ${response.reason}`) : ""
-
-    return (
-        <form onSubmit={e => {
-            e.preventDefault()
-            controller.handleRequest({
-                title: ref.current!.value,
-                description: ref1.current!.value
-            })
-
-
-        }}>
-            <input ref={ref} />
-            <textarea ref={ref1} />
-            {state}
-            <button type="submit">Add</button>
-        </form>
-    )
-}
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        controller.handle({
+          title: ref.current!.value,
+          desc: ref1.current!.value,
+        });
+      }}
+    >
+      <input ref={ref} />
+      <textarea ref={ref1} />
+      {state}
+      <button type="submit">Add</button>
+    </form>
+  );
+};

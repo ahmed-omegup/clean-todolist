@@ -1,23 +1,23 @@
-import { useState } from 'react'
-import type { ICreateTaskControllerFactory } from '../../controllers/create-task.controller.port'
-import type { IListTaskControllerFactory } from '../../controllers/list-tasks.controller.port'
-import { CreateTodo } from './CreateTodo'
-import { ListTodos } from './ListTodos'
+import { useState } from 'react';
+import { CreateTodo, type CreateTask } from './CreateTodo';
+import { ListTodos, type ListTasks } from './ListTodos';
 
-
-
-export const App = ({ di }: {
+export const App = ({
+  di,
+}: {
   di: {
-    createTask: ICreateTaskControllerFactory,
-    listTasks: IListTaskControllerFactory
-  }
+    createTask: CreateTask;
+    listTasks: ListTasks;
+  };
 }) => {
-  const [route, setRoute] = useState<'list' | 'create'>('list')
+  const [route, setRoute] = useState<'list' | 'create'>('list');
   return {
-    list: <>
-      <button onClick={() => setRoute('create')}>Add</button>
-      <ListTodos di={di} />
-    </>,
-    create: <CreateTodo di={di} goHome={() => setRoute('list')} />
-  }[route]
-}
+    list: (
+      <>
+        <button onClick={() => setRoute('create')}>Add</button>
+        <ListTodos di={di} />
+      </>
+    ),
+    create: <CreateTodo di={di} goHome={() => setRoute('list')} />,
+  }[route];
+};

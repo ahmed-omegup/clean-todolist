@@ -3,21 +3,7 @@ export interface CreateTaskRequest {
     description: string;
 }
 
-export type CreateTaskResponse = {
-    success: true;
-} | {
-    success: false;
-    reason: 'UnknownError';
-};
+export type CreateTaskResult = void
 
-export interface CreateTaskRequester {
-    execute(request: CreateTaskRequest):void;
-}
+export type CreateTaskError = 'UnknownError'
 
-export interface CreateTaskPresenter{
-    present(response: CreateTaskResponse): void;
-}
-
-export interface ICreateTaskRequesterFactory {
-    make(presenter :CreateTaskPresenter): CreateTaskRequester
-}

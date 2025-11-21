@@ -1,16 +1,16 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import type { ICreateTaskControllerFactory } from '../../controllers/create-task.controller.port'
-import type { IListTaskControllerFactory } from '../../controllers/list-tasks.controller.port'
-import { App } from './App'
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { App } from './App';
+import type { CreateTask } from './CreateTodo';
+import type { ListTasks } from './ListTodos';
 
-
-export const bootstrap = (di : {createTask: ICreateTaskControllerFactory,
-  listTasks: IListTaskControllerFactory
+export const bootstrap = (di: {
+  createTask: CreateTask;
+  listTasks: ListTasks;
 }) => {
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
-      <App di={di}/>
-    </StrictMode>,
-  )
-}
+      <App di={di} />
+    </StrictMode>
+  );
+};
