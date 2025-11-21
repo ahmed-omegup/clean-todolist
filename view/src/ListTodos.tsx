@@ -1,15 +1,17 @@
-import { useEffect, useMemo, useState } from 'react';
-import type { TaskEntity } from '../../entities/Task';
-import type { Presenter } from '../../use-cases/types';
+import { useEffect } from 'react';
+import type { ListTaskQuery } from '../../controllers/list-tasks.controller.port';
+import type { Controller } from '../../controllers/type';
 import type {
   ListTaskError,
   ListTaskResult,
 } from '../../use-cases/list-tasks.port';
-import type { Controller } from '../../controllers/type';
-import type { ListTaskQuery } from '../../controllers/list-tasks.controller.port';
+import type { Presenter } from '../../use-cases/types';
+import { useController } from './utils';
+
 export type ListTasks = (
   q: Presenter<ListTaskResult, ListTaskError>
 ) => Controller<ListTaskQuery>;
+
 export const ListTodos = ({
   di,
 }: {
@@ -17,18 +19,7 @@ export const ListTodos = ({
     listTasks: ListTasks;
   };
 }) => {
-  const [todos, setTodos] = useState<Array<TaskEntity> | null>(null);
-  const controller = useMemo(
-    () =>
-      di.listTasks({
-        present(response) {
-          if (response.success) {
-            setTodos(response.data);
-          }
-        },
-      }),
-    [di]
-  );
+  const { controller, result: todos } = useController(di.listTasks);
 
   useEffect(() => {
     controller.handle({});

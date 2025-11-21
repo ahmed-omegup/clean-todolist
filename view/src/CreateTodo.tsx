@@ -1,4 +1,4 @@
-import { createRef, useState } from 'react';
+import { createRef } from 'react';
 import type { CreateTaskCommand } from '../../controllers/create-task.controller.port';
 import type { Controller } from '../../controllers/type';
 import type {
@@ -6,6 +6,7 @@ import type {
   CreateTaskResult,
 } from '../../use-cases/create-task.port';
 import type { Presenter } from '../../use-cases/types';
+import { useController } from './utils';
 
 export type CreateTask = (
   q: Presenter<CreateTaskResult, CreateTaskError>
@@ -23,17 +24,12 @@ export const CreateTodo = ({
   const ref = createRef<HTMLInputElement>();
   const ref1 = createRef<HTMLTextAreaElement>();
 
-  const [response, setResponse] = useState<CreateTaskError | null>(null);
-  const controller = di.createTask({
-    present(response) {
-      if (response.success) {
-        goHome();
-      } else {
-        setResponse(response.error);
-      }
-    },
+  const { controller, error } = useController(di.createTask, (err) => {
+    if (!err) {
+      goHome();
+    }
   });
-  const state = response ? `Failed to create task: ${response}` : '';
+  const state = error ? `Failed to create task: ${error}` : '';
 
   return (
     <form
